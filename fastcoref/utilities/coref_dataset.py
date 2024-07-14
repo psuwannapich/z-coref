@@ -51,8 +51,6 @@ def _tokenize(tokenizer, tokens, clusters, speakers):
                         token_to_new_token_map[start] : token_to_new_token_map[end] + 1
                     ]
                 )
-
-    # print("new_tokens:", new_tokens)
     encoded_text = tokenizer(
         new_tokens,
         add_special_tokens=True,
@@ -63,38 +61,19 @@ def _tokenize(tokenizer, tokens, clusters, speakers):
     )
     # shifting clusters indices to align with bpe tokens
     # align clusters is the reason we can't do it in batches.
-    try:
-        new_clusters = [
-            [
-                (
-                    encoded_text.word_to_tokens(token_to_new_token_map[start]).start,
-                    encoded_text.word_to_tokens(token_to_new_token_map[end - 1]).end,
-                )
-                for start, end in cluster
-                if encoded_text.word_to_tokens(token_to_new_token_map[start])
-                and encoded_text.word_to_tokens(token_to_new_token_map[end - 1])
-            ]
-            for cluster in clusters
+    new_clusters = [
+        [
+            (
+                encoded_text.word_to_tokens(token_to_new_token_map[start]).start,
+                encoded_text.word_to_tokens(token_to_new_token_map[end - 1]).end,
+            )
+            for start, end in cluster
+            if encoded_text.word_to_tokens(token_to_new_token_map[start])
+            and encoded_text.word_to_tokens(token_to_new_token_map[end - 1])
         ]
-        new_clusters = [clusters for clusters in new_clusters if len(clusters) > 0]
-    except Exception as e:
-        print("=====================================")
-        print("Error:", e)
-
-        print(tokens)
-        print("Old: ", clusters)
-        print(new_tokens)
-        print(token_to_new_token_map)
-        print(encoded_text.word_ids())
-        new_clusters = []
-        raise ValueError(e)
-
-    if len(encoded_text.word_ids()) > 510:
-        print("encoded_text_len:", len(encoded_text.word_ids()))
-        print("encoded_text_len:", len(encoded_text["input_ids"]))
-        print(tokens)
-        print(new_clusters)
-        print("=====================================")
+        for cluster in clusters
+    ]
+    new_clusters = [clusters for clusters in new_clusters if len(clusters) > 0]
 
     return {
         "tokens": tokens,
@@ -115,6 +94,7 @@ def encode(example, tokenizer, nlp):
     elif "text" in example and example["text"]:
         clusters = example["clusters"]
 
+        # Find indexes that used to split text into tokens
         split_locations = sorted(
             set(
                 [
@@ -125,32 +105,26 @@ def encode(example, tokenizer, nlp):
                 ]
             )
         )
+        # Add the start and end of the text
         split_locations = [0] + split_locations + [len(example["text"])]
 
         example["tokens"] = []
         char_idx_to_token_idx = {}
+        # Tokenize the text with respect to the split indexes
         for start, end in zip(split_locations, split_locations[1:]):
             example["tokens"].append(example["text"][start:end])
             char_idx_to_token_idx[start] = len(example["tokens"]) - 1
         char_idx_to_token_idx[end] = len(example["tokens"])
 
-        new_clusters = [
+        # Create the clusters with respect to the new tokens
+        example["clusters"] = [
             [
                 (char_idx_to_token_idx[start], char_idx_to_token_idx[end] - 1)
                 for start, end in cluster
             ]
             for cluster in clusters
         ]
-        # verify alignment
-        for cluster, new_cluster in zip(clusters, new_clusters):
-            for (s1, e1), (s2, e2) in zip(cluster, new_cluster):
-                mention = example["text"][s1:e1]
-                assert mention == "".join(example["tokens"][s2 : e2 + 1]), (
-                    mention,
-                    example["tokens"][s2 : e2 + 1],
-                )
 
-        example["clusters"] = new_clusters
     else:
         raise ValueError(f"Example is empty: {example}")
 
