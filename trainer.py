@@ -13,13 +13,13 @@ from tqdm.auto import tqdm
 import transformers
 from transformers import AutoConfig, AutoTokenizer, get_linear_schedule_with_warmup
 
-from fastcoref.coref_models.modeling_fcoref import FCorefModel
+from coref_models.modeling_fcoref import FCorefModel
 
-from fastcoref.utilities import coref_dataset
-from fastcoref.utilities.collate import DynamicBatchSampler, LeftOversCollator
-from fastcoref.utilities.consts import SUPPORTED_MODELS
-from fastcoref.utilities.metrics import MentionEvaluator, CorefEvaluator
-from fastcoref.utilities.util import (
+from utilities import coref_dataset
+from utilities.collate import DynamicBatchSampler, LeftOversCollator
+from utilities.consts import SUPPORTED_MODELS
+from utilities.metrics import MentionEvaluator, CorefEvaluator
+from utilities.util import (
     set_seed,
     create_mention_to_antecedent,
     create_clusters,
@@ -28,7 +28,7 @@ from fastcoref.utilities.util import (
     save_all,
 )
 
-from fastcoref.zp_metrics import AZPCorefEvaluator
+from utilities.zp_metrics import AZPCorefEvaluator
 
 # Setup logging
 logger = logging.getLogger(__name__)

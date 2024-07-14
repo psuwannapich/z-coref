@@ -3,7 +3,7 @@ from torch.nn import Module, Linear, LayerNorm, Dropout
 from transformers import BertPreTrainedModel, AutoModel
 from transformers.activations import ACT2FN
 
-from fastcoref.utilities.util import (
+from utilities.util import (
     extract_clusters,
     extract_mentions_to_clusters,
     mask_tensor,
@@ -45,8 +45,7 @@ class FCorefModel(BertPreTrainedModel):
         base_model = AutoModel.from_config(config)
         FCorefModel.base_model_prefix = base_model.base_model_prefix
         FCorefModel.config_class = base_model.config_class
-        # print("==== model config ====", FCorefModel.config_class)
-        # print("hidden_size:", config.hidden_size)
+
         setattr(self, self.base_model_prefix, base_model)
 
         self.start_mention_mlp = FullyConnectedLayer(

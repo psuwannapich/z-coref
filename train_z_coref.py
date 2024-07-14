@@ -1,4 +1,4 @@
-from fastcoref import TrainingArgs, CorefTrainer
+from trainer import TrainingArgs, CorefTrainer
 import spacy
 import spacy_pythainlp.core
 
@@ -33,14 +33,6 @@ trainer = CorefTrainer(
     dev_file=f"{root_dir}/val_tokens.jsonl",  # optional
     # test_file='/home/poomphob/Desktop/Thesis/fastcoref/test.py'   # optional
 )
-
-# trainer = CorefTrainer(
-#     args=args,
-#     nlp=nlp,
-#     train_file="/home/poomphob/Desktop/Thesis/s2e_coref/raw_data/hann_coref/val.json",
-#     dev_file="/home/poomphob/Desktop/Thesis/s2e_coref/raw_data/hann_coref/test.json",  # optional
-#     # test_file='/home/poomphob/Desktop/Thesis/fastcoref/test.py'   # optional
-# )
 
 
 trainer.train()

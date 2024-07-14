@@ -3,7 +3,7 @@ import os
 import random
 import torch
 import numpy as np
-from fastcoref.utilities.consts import NULL_ID_FOR_COREF, CATEGORIES, PRONOUNS_GROUPS
+from utilities.consts import NULL_ID_FOR_COREF, CATEGORIES, PRONOUNS_GROUPS
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from spacy import Language, util
 from spacy.tokens import Doc, Span
-from fastcoref import FCoref
+from modeling import FCoref
 from typing import List, Tuple
 
 

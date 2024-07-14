@@ -14,15 +14,15 @@ import spacy
 from spacy.cli import download
 from spacy.language import Language
 
-from fastcoref.coref_models.modeling_fcoref import FCorefModel
-from fastcoref.utilities.util import (
+from coref_models.modeling_fcoref import FCorefModel
+from utilities.util import (
     set_seed,
     create_mention_to_antecedent,
     create_clusters,
     align_to_char_level,
     encode,
 )
-from fastcoref.utilities.collate import (
+from utilities.collate import (
     LeftOversCollator,
     DynamicBatchSampler,
     PadCollator,
