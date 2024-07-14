@@ -350,7 +350,7 @@ class CorefModel(ABC):
 class FCoref(CorefModel):
     def __init__(
         self,
-        model_name_or_path="biu-nlp/f-coref",
+        model_name_or_path,
         device=None,
         nlp="en_core_web_sm",
         enable_progress_bar=True,
