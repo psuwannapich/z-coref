@@ -18,7 +18,7 @@ from coref_models.modeling_fcoref import FCorefModel
 from utilities import coref_dataset
 from utilities.collate import DynamicBatchSampler, LeftOversCollator
 from utilities.consts import SUPPORTED_MODELS
-from utilities.metrics import MentionEvaluator, CorefEvaluator
+from utilities.metrics import MentionEvaluator, CorefEvaluator, AZPCorefEvaluator
 from utilities.util import (
     set_seed,
     create_mention_to_antecedent,
@@ -28,7 +28,6 @@ from utilities.util import (
     save_all,
 )
 
-from utilities.zp_metrics import AZPCorefEvaluator
 
 # Setup logging
 logger = logging.getLogger(__name__)

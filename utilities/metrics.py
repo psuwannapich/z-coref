@@ -57,6 +57,71 @@ class CorefEvaluator(object):
         return self.get_precision(), self.get_recall(), self.get_f1()
 
 
+class AZPCorefEvaluator(object):
+    """Evaluator for anaphoric zero pronoun"""
+
+    def __init__(self):
+        self.p_num = 0
+        self.g_num = 0
+        self.hit_num = 0
+        super(AZPCorefEvaluator, self).__init__()
+
+    def get_f1(self):
+        return f1(self.hit_num, self.p_num, self.hit_num, self.g_num)
+
+    def get_recall(self):
+        return 0 if self.hit_num == 0 else self.hit_num / float(self.g_num)
+
+    def get_precision(self):
+        return 0 if self.hit_num == 0 else self.hit_num / float(self.p_num)
+
+    def get_prf(self):
+        return self.get_precision(), self.get_recall(), self.get_f1()
+
+    def update(self, gold_clusters, predicted_clusters):
+
+        example_predicted_azps = list()
+        example_gold_azps = list()
+
+        for cluster in gold_clusters:
+            sorted_cluster = sorted(cluster, key=lambda x: x[0])
+            normal_mention_cluster = [
+                (start, end) for start, end in sorted_cluster if start != end
+            ]
+            is_azp = False
+            for start, end in sorted_cluster:
+                if start == end:
+                    if is_azp:
+                        example_gold_azps.append([(start, end), normal_mention_cluster])
+                elif start != end:
+                    is_azp = True
+
+        for cluster in predicted_clusters:
+            sorted_cluster = sorted(cluster, key=lambda x: x[0])
+            normal_mention_cluster = [
+                (start, end) for start, end in sorted_cluster if start != end
+            ]
+            is_azp = False
+            for start, end in sorted_cluster:
+                if start == end:
+                    if is_azp:
+                        example_predicted_azps.append(
+                            [(start, end), normal_mention_cluster]
+                        )
+                elif start != end:
+                    is_azp = True
+
+        self.g_num += len(example_gold_azps)
+        self.p_num += len(example_predicted_azps)
+
+        for predicted_azp in example_predicted_azps:
+            for gold_azp in example_gold_azps:
+                if predicted_azp[0][0] == gold_azp[0][0]:
+                    if len(set(predicted_azp[1]).intersection(set(gold_azp[1]))) > 0:
+                        self.hit_num += 1
+                    break
+
+
 class Evaluator(object):
     def __init__(self, metric, beta=1):
         self.p_num = 0
@@ -156,8 +221,11 @@ def lea(clusters, mention_to_gold):
         all_links = len(c) * (len(c) - 1) / 2.0
         for i, m in enumerate(c):
             if m in mention_to_gold:
-                for m2 in c[i + 1:]:
-                    if m2 in mention_to_gold and mention_to_gold[m] == mention_to_gold[m2]:
+                for m2 in c[i + 1 :]:
+                    if (
+                        m2 in mention_to_gold
+                        and mention_to_gold[m] == mention_to_gold[m2]
+                    ):
                         common_links += 1
 
         num += len(c) * common_links / float(all_links)
