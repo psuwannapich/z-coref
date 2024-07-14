@@ -9,7 +9,7 @@ from fastcoref.utilities.util import (
     mask_tensor,
 )
 
-# took from: https://github.com/yuvalkirstain/s2e-coref
+# took from: https://github.com/shon-otmazgin/fastcoref
 
 
 class FullyConnectedLayer(Module):
@@ -322,22 +322,8 @@ class FCorefModel(BertPreTrainedModel):
             -1, segment_len
         ), attention_mask.view(-1, segment_len)
 
-        try:
-            outputs = self.base_model(input_ids, attention_mask=attention_mask)
-            # print("normal:", input_ids.shape)
-            # print("normal:", attention_mask.shape)
-        except Exception as e:
-            # print("error:", input_ids.shape)
-            # print("error:", attention_mask.shape)
-            print("input_ids:", f"'{input_ids.detach().cpu().numpy()}'")
-            print("attention_mask:", f"'{attention_mask.detach().cpu().numpy()}'")
-            # print("batch:", batch)
-            import pandas as pd
+        outputs = self.base_model(input_ids, attention_mask=attention_mask)
 
-            input_ids = pd.DataFrame(input_ids.cpu().numpy()).to_csv(
-                "temp_input_ids.csv"
-            )
-            raise ValueError(e)
         sequence_output = outputs.last_hidden_state
 
         attention_mask = attention_mask.view(

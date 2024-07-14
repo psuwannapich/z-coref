@@ -38,7 +38,6 @@ def _tokenize(tokenizer, tokens, clusters, speakers):
                 ]
             )
 
-    print(new_tokens)
     encoded_text = tokenizer(
         new_tokens,
         add_special_tokens=True,
@@ -46,10 +45,6 @@ def _tokenize(tokenizer, tokens, clusters, speakers):
         return_length=True,
         return_attention_mask=False,
     )
-    print(encoded_text)
-    print("=====================================")
-    print
-    # encoded_text = tokenizer(new_tokens, add_special_tokens=True, is_split_into_words=True)
 
     new_clusters = [
         [
