@@ -36,3 +36,5 @@ trainer = CorefTrainer(
 
 trainer.train()
 ```
+
+Training example can be found in `/examples`.
