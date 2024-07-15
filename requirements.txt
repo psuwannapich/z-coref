@@ -1,0 +1,5 @@
+datasets==2.20.0
+spacy-pythainlp==0.1
+wandb==0.17.4
+transformers==4.41.2
+tokenizers==0.19.1

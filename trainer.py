@@ -64,7 +64,7 @@ class TrainingArgs:
     device: str = None
 
 
-def _load_f_coref_model(args):
+def _load_z_coref_model(args):
     logger.info(
         f"Loading FCoref model with underlying transformer {args.model_name_or_path}"
     )
@@ -94,7 +94,7 @@ def _load_f_coref_model(args):
         cache_dir=args.cache_dir,
     )
 
-    t_params, h_params = [p / 1000000 for p in model.num_parameters()]
+    t_params, h_params = [p / 1e6 for p in model.num_parameters()]
     logger.info(
         f"FCoref Parameters: {t_params + h_params:.1f}M, "
         f"Transformer: {t_params:.1f}M, Coref head: {h_params:.1f}M"
@@ -130,7 +130,7 @@ class CorefTrainer:
             )
         )
 
-        self.model, self.tokenizer = _load_f_coref_model(self.args)
+        self.model, self.tokenizer = _load_z_coref_model(self.args)
         self.model.to(self.device)
 
         self.collator = LeftOversCollator(
