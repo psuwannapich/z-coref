@@ -1,6 +1,6 @@
 # Z-coref: Thai Coreference and Zero Pronoun Resolution
 
-This is a repository for Z-coref project, Thai Coreference and Zero Pronoun Resolution. Please refer to the following paper for more details: [Z-coref: Thai Coreference and Zero Pronoun Resolution]()
+This is a repository for Z-coref project, Thai Coreference and Zero Pronoun Resolution. Please refer to the following paper for more details: [Z-coref: Thai Coreference and Zero Pronoun Resolution](https://aclanthology.org/2024.acl-srw.12/)
 
 Dataset: [Z-coref dataset](https://huggingface.co/datasets/psuwannapich/Z-coref-dataset)
 
